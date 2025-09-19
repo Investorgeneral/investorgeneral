@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Charming 🎉</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      animation: bgchange 10s infinite alternate;
+    }
+    @keyframes bgchange {
+      0%   { background: linear-gradient(135deg, #ff99cc, #66ccff); }
+      25%  { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+      50%  { background: linear-gradient(135deg, #7F00FF, #E100FF); }
+      75%  { background: linear-gradient(135deg, #43cea2, #185a9d); }
+      100% { background: linear-gradient(135deg, #ff512f, #dd2476); }
+    }
+    .container {
+      max-width: 600px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 2;
+      position: relative;
+    }
+    h1 { font-size: 2.5rem; margin-bottom: 15px; }
+    h2 { font-size: 1.5rem; margin-bottom: 20px; }
+    p { font-size: 1.2rem; line-height: 1.6; }
+    .emoji { font-size: 3rem; margin-top: 20px; animation: bounce 1.5s infinite; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #ffcc00;
+      color: #333;
+      font-weight: bold;
+    }
+    #wishBox {
+      margin-top: 20px;
+    }
+    #messages {
+      margin-top: 15px;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.2);
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="container">
+    <h1>Hey Charming 🎂</h1>
+    <h2>It’s your Birthday!!!</h2>
+    <p>
+      Wishing you an amazing year ahead full of happiness, success, and love.  
+      Happy <span id="age"></span> Birthday 🥳
+    </p>
+    <div class="emoji">🎉🎁🎊</div>
+
+    <!-- Button to trigger interaction -->
+    <button id="celebrateBtn">Click to Celebrate 🎶</button>
+
+    <!-- Wish input -->
+    <div id="wishBox">
+      <input type="text" id="wishInput" placeholder="Type your wish..." />
+      <button id="wishBtn">Send Wish 💌</button>
+      <div id="messages"></div>
+    </div>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <script>
+    // Age
+    const age = 22;
+    document.getElementById("age").innerText = age + "ᵗʰ";
+
+    // Music control
+    const music = document.getElementById("bgMusic");
+    const btn = document.getElementById("celebrateBtn");
+
+    btn.addEventListener("click", () => {
+      music.play();
+      burstConfetti();
+    });
+
+    // Confetti
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function randomColor() {
+      const colors = ["#ff0", "#0f0", "#0ff", "#f0f", "#f00", "#00f", "#fff"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function createParticle() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 6 + 4,
+        color: randomColor(),
+        speed: Math.random() * 3 + 2
+      };
+    }
+
+    function updateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.y += p.speed;
+        if (p.y > canvas.height) {
+          particles[i] = createParticle();
+          p.y = 0;
+        }
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+      requestAnimationFrame(updateParticles);
+    }
+
+    function burstConfetti() {
+      particles = [];
+      for (let i = 0; i < 200; i++) {
+        particles.push(createParticle());
+      }
+      updateParticles();
+    }
+
+    // Wishes
+    const wishBtn = document.getElementById("wishBtn");
+    const wishInput = document.getElementById("wishInput");
+    const messages = document.getElementById("messages");
+
+    wishBtn.addEventListener("click", () => {
+      if (wishInput.value.trim() !== "") {
+        const p = document.createElement("p");
+        p.textContent = "💌 " + wishInput.value;
+        messages.appendChild(p);
+        wishInput.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
